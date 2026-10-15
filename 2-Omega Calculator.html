@@ -1,0 +1,1420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Omega Trading Calculator</title>
+
+<style>
+    * {
+        box-sizing: border-box;
+    }
+
+    html,
+    body {
+        width: 100%;
+        min-height: 100%;
+        margin: 0;
+        padding: 0;
+    }
+
+    body {
+        font-family: Arial, Helvetica, sans-serif;
+        background: #f3f5f7;
+        color: #20252b;
+        transition: background 0.2s ease, color 0.2s ease;
+    }
+
+    .wrap {
+        width: 100%;
+        max-width: 1050px;
+        margin: 0 auto;
+        min-height: 100vh;
+    }
+
+    /* =========================
+       HEADER
+       ========================= */
+
+    header {
+        background: #17212b;
+        color: white;
+        padding: 22px 20px;
+        text-align: center;
+    }
+
+    header h1 {
+        margin: 0;
+        font-size: 26px;
+        font-weight: 700;
+    }
+
+    header p {
+        margin: 7px 0 0;
+        font-size: 14px;
+        color: #c7d0d9;
+    }
+
+    /* =========================
+       STICKY TABS
+       ========================= */
+
+    .tabs {
+        display: flex;
+        width: 100%;
+        background: #e4e8ec;
+        border-bottom: 1px solid #cdd3d9;
+
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+    }
+
+    .tab {
+        flex: 1;
+        border: none;
+        padding: 15px 10px;
+        font-size: 16px;
+        font-weight: 700;
+        cursor: pointer;
+        background: #e4e8ec;
+        color: #46515c;
+        transition: all 0.2s ease;
+    }
+
+    .tab:hover {
+        background: #d8dde2;
+    }
+
+    .tab.active {
+        background: white;
+        color: #17212b;
+        box-shadow: inset 0 -3px 0 #17212b;
+    }
+
+    /* =========================
+       TAB CONTENT
+       ========================= */
+
+    .tab-content {
+        display: none;
+        padding: 20px;
+    }
+
+    .tab-content.active {
+        display: block;
+    }
+
+    /* =========================
+       SECTIONS
+       ========================= */
+
+    .section {
+        background: white;
+        border: 1px solid #d8dde2;
+        border-radius: 10px;
+        padding: 20px;
+        margin-bottom: 15px;
+    }
+
+    .section h2 {
+        margin: 0 0 18px;
+        font-size: 19px;
+        color: #17212b;
+    }
+
+    .row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 15px;
+        align-items: center;
+        margin-bottom: 14px;
+    }
+
+    .row:last-child {
+        margin-bottom: 0;
+    }
+
+    label {
+        font-size: 14px;
+        font-weight: 600;
+        color: #414b55;
+    }
+
+    input {
+        width: 100%;
+        height: 42px;
+        padding: 8px 11px;
+        border: 1px solid #bcc5cd;
+        border-radius: 6px;
+        background: white;
+        color: #20252b;
+        font-size: 15px;
+        outline: none;
+
+        transition:
+            border-color 0.2s ease,
+            box-shadow 0.2s ease,
+            background 0.2s ease;
+    }
+
+    input:focus {
+        border-color: #17212b;
+        box-shadow: 0 0 0 2px rgba(23, 33, 43, 0.12);
+    }
+
+    /* =========================
+       CLEAR BUTTON
+       Between calculator and results
+       ========================= */
+
+    .clear-container {
+        margin: 0 0 15px;
+    }
+
+    .clear-btn {
+        width: 100%;
+        height: 45px;
+
+        border: none;
+        border-radius: 7px;
+
+        background: #17212b;
+        color: white;
+
+        font-size: 15px;
+        font-weight: 700;
+
+        cursor: pointer;
+
+        transition:
+            background 0.2s ease,
+            transform 0.1s ease;
+    }
+
+    .clear-btn:hover {
+        background: #273541;
+    }
+
+    .clear-btn:active {
+        transform: scale(0.99);
+    }
+
+    /* =========================
+       RESULTS
+       ========================= */
+
+    .result {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        background: #f1f4f6;
+
+        padding: 12px 14px;
+        margin-bottom: 10px;
+
+        border-radius: 6px;
+        font-size: 14px;
+    }
+
+    .result:last-child {
+        margin-bottom: 0;
+    }
+
+    .result strong {
+        color: #333d46;
+    }
+
+    .result span {
+        font-weight: 700;
+        color: #17212b;
+        text-align: right;
+    }
+
+    /* =========================
+       NOTE
+       ========================= */
+
+    .note {
+        padding: 0 20px 25px;
+
+        font-size: 12px;
+        line-height: 1.6;
+
+        color: #69747e;
+    }
+
+    /* =========================
+       TABLET
+       ========================= */
+
+    @media (max-width: 760px) {
+
+        .tab-content {
+            padding: 15px;
+        }
+
+        .section {
+            padding: 16px;
+        }
+
+        .row {
+            gap: 10px;
+        }
+
+        header h1 {
+            font-size: 23px;
+        }
+    }
+
+    /* =========================
+       MOBILE
+       ========================= */
+
+    @media (max-width: 480px) {
+
+        header {
+            padding: 18px 15px;
+        }
+
+        header h1 {
+            font-size: 21px;
+        }
+
+        header p {
+            font-size: 13px;
+        }
+
+        .tab {
+            padding: 14px 8px;
+            font-size: 15px;
+        }
+
+        .tab-content {
+            padding: 12px;
+        }
+
+        .section {
+            border-radius: 7px;
+            padding: 15px;
+            margin-bottom: 12px;
+        }
+
+        .section h2 {
+            font-size: 18px;
+        }
+
+        .row {
+            grid-template-columns: 1fr;
+            gap: 6px;
+            margin-bottom: 13px;
+        }
+
+        label {
+            font-size: 14px;
+        }
+
+        input {
+            height: 46px;
+            font-size: 16px;
+        }
+
+        .clear-container {
+            margin-bottom: 12px;
+        }
+
+        .clear-btn {
+            height: 46px;
+            font-size: 15px;
+        }
+
+        .result {
+            padding: 12px;
+            font-size: 13px;
+        }
+
+        .note {
+            padding: 0 12px 20px;
+        }
+    }
+
+    /* =========================
+       VERY SMALL PHONES
+       ========================= */
+
+    @media (max-width: 360px) {
+
+        header h1 {
+            font-size: 19px;
+        }
+
+        header p {
+            font-size: 12px;
+        }
+
+        .section {
+            padding: 12px;
+        }
+
+        .tab {
+            font-size: 14px;
+        }
+    }
+
+    /* =====================================================
+       DARK MODE
+       ===================================================== */
+
+    @media (prefers-color-scheme: dark) {
+
+        body {
+            background: #101418;
+            color: #e7edf3;
+        }
+
+        header {
+            background: #0d1217;
+            color: #f5f7f9;
+        }
+
+        header p {
+            color: #9da8b3;
+        }
+
+        .tabs {
+            background: #20262d;
+            border-bottom-color: #343c45;
+
+            box-shadow:
+                0 2px 8px rgba(0, 0, 0, 0.35);
+        }
+
+        .tab {
+            background: #20262d;
+            color: #aeb8c2;
+        }
+
+        .tab:hover {
+            background: #29313a;
+        }
+
+        .tab.active {
+            background: #171c22;
+            color: #f1f5f8;
+
+            box-shadow:
+                inset 0 -3px 0 #f1f5f8;
+        }
+
+        .section {
+            background: #171c22;
+            border-color: #343c45;
+        }
+
+        .section h2 {
+            color: #f1f5f8;
+        }
+
+        label {
+            color: #c3ccd5;
+        }
+
+        input {
+            background: #20262d;
+            color: #f1f5f8;
+            border-color: #46515c;
+
+            color-scheme: dark;
+        }
+
+        input:focus {
+            border-color: #aeb8c2;
+
+            box-shadow:
+                0 0 0 2px rgba(174, 184, 194, 0.15);
+        }
+
+        .result {
+            background: #222931;
+        }
+
+        .result strong {
+            color: #cbd4dc;
+        }
+
+        .result span {
+            color: #f1f5f8;
+        }
+
+        .clear-btn {
+            background: #e7edf3;
+            color: #101418;
+        }
+
+        .clear-btn:hover {
+            background: #ffffff;
+        }
+
+        .note {
+            color: #89949f;
+        }
+    }
+
+    /* =========================
+       MOBILE DARK MODE
+       ========================= */
+
+    @media (max-width: 480px) and (prefers-color-scheme: dark) {
+
+        body {
+            background: #101418;
+        }
+    }
+
+    #saeedi {
+        direction: ltr;
+    }
+
+    #saeedi .calculator-container {
+        background-color: #2c2c2c;
+        border: 2px solid #ff8c00;
+        border-radius: 10px;
+        width: 380px;
+        max-width: 100%;
+        margin: 0 auto;
+        padding: 20px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+        box-sizing: border-box;
+    }
+
+    #saeedi h2 {
+        text-align: center;
+        color: #ff8c00;
+        margin-top: 0;
+        margin-bottom: 20px;
+        font-size: 22px;
+    }
+
+    #saeedi .section-title {
+        background-color: #ff8c00;
+        color: #000;
+        padding: 8px;
+        text-align: center;
+        font-weight: bold;
+        border-radius: 5px;
+        margin-bottom: 15px;
+        box-sizing: border-box;
+    }
+
+    #saeedi .form-group {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 12px;
+    }
+
+    #saeedi label {
+        font-size: 14px;
+        color: #dda7ff;
+        text-align: left;
+    }
+
+    #saeedi select,
+    #saeedi input[type="text"] {
+        width: 55%;
+        padding: 6px;
+        border-radius: 4px;
+        border: 1px solid #555;
+        background-color: #3b3b3b;
+        color: #fff;
+        font-size: 13px;
+        text-align: left;
+        box-sizing: border-box;
+        height: auto;
+    }
+
+    #saeedi .btn-calc {
+        width: 100%;
+        background-color: #ff8c00;
+        color: #000;
+        font-weight: bold;
+        padding: 10px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        margin-top: 15px;
+        font-size: 15px;
+        transition: background 0.3s;
+        box-sizing: border-box;
+    }
+
+    #saeedi .btn-calc:hover {
+        background-color: #e07b00;
+    }
+
+    #saeedi .result-box {
+        width: 100%;
+        background-color: #cc0000;
+        color: #fff;
+        text-align: center;
+        padding: 10px;
+        font-weight: bold;
+        border-radius: 5px;
+        margin-top: 15px;
+        font-size: 14px;
+        box-sizing: border-box;
+    }
+
+    #saeedi .enhancer-display {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 15px;
+        padding: 8px;
+        background-color: #333;
+        border-radius: 5px;
+        box-sizing: border-box;
+    }
+
+</style>
+</head>
+
+<body>
+
+<div class="wrap">
+
+    <!-- ================= HEADER ================= -->
+
+    <header>
+
+        <h1>Omega Trading Calculator</h1>
+
+        <p>
+            Crypto &amp; Forex position sizing and risk calculator
+        </p>
+
+    </header>
+
+
+    <!-- ================= STICKY TABS ================= -->
+
+    <div class="tabs">
+
+        <button
+            class="tab active"
+            onclick="openTab('forex', this)">
+            Forex
+        </button>
+
+        <button
+            class="tab"
+            onclick="openTab('crypto', this)">
+            Crypto
+        </button>
+
+        <button
+            class="tab"
+            onclick="openTab('saeedi', this)">
+            Saeedi
+        </button>
+
+    </div>
+
+
+    <!-- =================================================
+         FOREX TAB
+         ================================================= -->
+
+    <div id="forex" class="tab-content active">
+
+        <!-- CALCULATOR -->
+
+        <div class="section">
+
+            <h2>Forex Calculator</h2>
+
+            <div class="row">
+                <label for="fBalance">Balance</label>
+
+                <input
+                    type="number"
+                    id="fBalance"
+                    value="1000"
+                    step="any">
+            </div>
+
+            <div class="row">
+                <label for="fMdd">MDD (%)</label>
+
+                <input
+                    type="number"
+                    id="fMdd"
+                    value="30"
+                    step="any">
+            </div>
+
+            <div class="row">
+                <label for="fCl">CL</label>
+
+                <input
+                    type="number"
+                    id="fCl"
+                    value="10"
+                    step="any">
+            </div>
+
+            <div class="row">
+                <label for="fPipet">Pipet</label>
+
+                <input
+                    type="number"
+                    id="fPipet"
+                    value="100"
+                    step="any">
+            </div>
+
+            <div class="row">
+                <label for="fRR">Risk / Reward</label>
+
+                <input
+                    type="number"
+                    id="fRR"
+                    value="5"
+                    step="any">
+            </div>
+
+        </div>
+
+
+        <!-- CLEAR BUTTON -->
+
+        <div
+            class="clear-container"
+            id="clearContainerForex"
+            style="display: none;">
+
+            <button
+                class="clear-btn"
+                onclick="clearAll()">
+
+                Clear All
+
+            </button>
+
+        </div>
+
+
+        <!-- RESULTS -->
+
+        <div class="section">
+
+            <h2>Forex Results</h2>
+
+            <div class="result">
+                <strong>RPT %</strong>
+                <span id="fRptPct">0</span>
+            </div>
+
+            <div class="result">
+                <strong>RPT USD</strong>
+                <span id="fRptUsd">0</span>
+            </div>
+
+            <div class="result">
+                <strong>Position Size</strong>
+                <span id="fPos">0</span>
+            </div>
+
+            <div class="result">
+                <strong>Stop Loss USD</strong>
+                <span id="fSLUsd">0</span>
+            </div>
+
+            <div class="result">
+                <strong>Take Profit USD</strong>
+                <span id="fTPUsd">0</span>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =================================================
+         CRYPTO TAB
+         ================================================= -->
+
+    <div id="crypto" class="tab-content">
+
+        <!-- CALCULATOR -->
+
+        <div class="section">
+
+            <h2>Crypto Calculator</h2>
+
+            <div class="row">
+                <label for="cBalance">Balance</label>
+
+                <input
+                    type="number"
+                    id="cBalance"
+                    value="1000"
+                    step="any">
+            </div>
+
+            <div class="row">
+                <label for="cMdd">MDD (%)</label>
+
+                <input
+                    type="number"
+                    id="cMdd"
+                    value="30"
+                    step="any">
+            </div>
+
+            <div class="row">
+                <label for="cCl">CL</label>
+
+                <input
+                    type="number"
+                    id="cCl"
+                    value="10"
+                    step="any">
+            </div>
+
+            <div class="row">
+                <label for="cSl">SL (%)</label>
+
+                <input
+                    type="number"
+                    id="cSl"
+                    value="0.5"
+                    step="any">
+            </div>
+
+            <div class="row">
+                <label for="cRR">Risk / Reward</label>
+
+                <input
+                    type="number"
+                    id="cRR"
+                    value="5"
+                    step="any">
+            </div>
+
+            <div class="row">
+                <label for="cLev">Leverage</label>
+
+                <input
+                    type="number"
+                    id="cLev"
+                    value="10"
+                    step="any">
+            </div>
+
+        </div>
+
+
+        <!-- CLEAR BUTTON -->
+
+        <div
+            class="clear-container"
+            id="clearContainerCrypto"
+            style="display: none;">
+
+            <button
+                class="clear-btn"
+                onclick="clearAll()">
+
+                Clear All
+
+            </button>
+
+        </div>
+
+
+        <!-- RESULTS -->
+
+        <div class="section">
+
+            <h2>Crypto Results</h2>
+
+            <div class="result">
+                <strong>RPT %</strong>
+                <span id="cRptPct">0</span>
+            </div>
+
+            <div class="result">
+                <strong>RPT USD</strong>
+                <span id="cRptUsd">0</span>
+            </div>
+
+            <div class="result">
+                <strong>Position Size</strong>
+                <span id="cPos">0</span>
+            </div>
+
+            <div class="result">
+                <strong>Stop Loss USD</strong>
+                <span id="cSLUsd">0</span>
+            </div>
+
+            <div class="result">
+                <strong>Take Profit USD</strong>
+                <span id="cTPUsd">0</span>
+            </div>
+
+            <div class="result">
+                <strong>Margin</strong>
+                <span id="cMargin">0</span>
+            </div>
+
+        </div>
+
+    </div>
+
+    <div id="saeedi" class="tab-content">
+        <div class="calculator-container">
+            <h2>Position Management</h2>
+
+            <div class="form-group">
+                <label>Zone:</label>
+                <select id="cbozone" onchange="runAllCalculations()">
+                    <option value="">-- Select --</option>
+                    <option value="Supply">Supply</option>
+                    <option value="Demand">Demand</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Curve:</label>
+                <select id="cbocurve" onchange="runAllCalculations()">
+                    <option value="">-- Select --</option>
+                    <option value="Upper">Upper</option>
+                    <option value="Middle">Middle</option>
+                    <option value="Lower">Lower</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Trend:</label>
+                <select id="cbotrend" onchange="runAllCalculations()">
+                    <option value="">-- Select --</option>
+                    <option value="UpTrend">UpTrend</option>
+                    <option value="DownTrend">DownTrend</option>
+                    <option value="Range">Range</option>
+                </select>
+            </div>
+
+            <button class="btn-calc" onclick="runAllCalculations()">Decision Matrix</button>
+            <div id="txtDM" class="result-box">Please select Items</div>
+
+            <div style="margin-top: 20px;" class="section-title">Please select Items</div>
+
+            <div class="form-group">
+                <label>Freshness:</label>
+                <select id="cbo11" onchange="runAllCalculations()">
+                    <option value="">-- Select --</option>
+                    <option value="Fresh">Fresh</option>
+                    <option value="1 Contact">1 Contact</option>
+                    <option value="> 1 Contact">&gt; 1 Contact</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Profit Margin:</label>
+                <select id="cbo22" onchange="runAllCalculations()">
+                    <option value="">-- Select --</option>
+                    <option value="< 3">&lt; 3</option>
+                    <option value="3 To 5">3 To 5</option>
+                    <option value="> 5">&gt; 5</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Strength:</label>
+                <select id="cbo33" onchange="runAllCalculations()">
+                    <option value="">-- Select --</option>
+                    <option value="Weak">Weak</option>
+                    <option value="Strong">Strong</option>
+                    <option value="Strongest">Strongest</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Time:</label>
+                <select id="cbo44" onchange="runAllCalculations()">
+                    <option value="">-- Select --</option>
+                    <option value="> 6 Candle">&gt; 6 Candle</option>
+                    <option value="4 To 6 Candle">4 To 6 Candle</option>
+                    <option value="<= 3 Candle">&lt;= 3 Candle</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Curve:</label>
+                <select id="cbo55" onchange="runAllCalculations()">
+                    <option value="">-- Select --</option>
+                    <option value="Near to Zone">Near to Zone</option>
+                    <option value="Middle Curve">Middle Curve</option>
+                    <option value="Far from Zone">Far from Zone</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Trend:</label>
+                <select id="cbo66" onchange="runAllCalculations()">
+                    <option value="">-- Select --</option>
+                    <option value="Up Trend">Up Trend</option>
+                    <option value="Range">Range</option>
+                    <option value="Down Trend">Down Trend</option>
+                </select>
+            </div>
+
+            <div class="enhancer-display">
+                <label style="color: #fff;">ODs Enhancer (Score):</label>
+                <span id="Text21" style="font-weight: bold; color: #ff8c00;">0.00</span>
+            </div>
+
+            <button class="btn-calc" onclick="runAllCalculations()">Calc OE Score</button>
+
+            <div id="txt_OE" class="result-box">Do not Trade!!!!</div>
+        </div>
+    </div>
+
+
+    <!-- ================= NOTE ================= -->
+
+    <div class="note">
+
+        Calculations are performed automatically when you
+        change any input.
+
+        Clear All resets all input fields and calculated results.
+
+    </div>
+
+</div>
+
+
+<script>
+
+    /* =====================================================
+       TAB CONTROL
+       ===================================================== */
+
+    function openTab(tabName, button) {
+
+        document
+            .querySelectorAll(".tab-content")
+            .forEach(function(tab) {
+
+                tab.classList.remove("active");
+
+            });
+
+
+        document
+            .querySelectorAll(".tab")
+            .forEach(function(tabButton) {
+
+                tabButton.classList.remove("active");
+
+            });
+
+
+        document
+            .getElementById(tabName)
+            .classList.add("active");
+
+
+        button.classList.add("active");
+
+
+        updateClearButton();
+    }
+
+
+    /* =====================================================
+       NUMBER FUNCTION
+       ===================================================== */
+
+    function n(id) {
+
+        const value = parseFloat(
+            document.getElementById(id).value
+        );
+
+        return isNaN(value) ? 0 : value;
+    }
+
+
+    /* =====================================================
+       NUMBER FORMAT
+       ===================================================== */
+
+    function fmt(value) {
+
+        if (!isFinite(value)) {
+            return "0";
+        }
+
+        return value.toLocaleString(
+            undefined,
+            {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            }
+        );
+    }
+
+
+    /* =====================================================
+       SET RESULT
+       ===================================================== */
+
+    function setv(id, value) {
+
+        document
+            .getElementById(id)
+            .textContent = fmt(value);
+    }
+
+
+    /* =====================================================
+       CRYPTO CALCULATOR
+       ===================================================== */
+
+    function calcCrypto() {
+
+        const balance = n("cBalance");
+        const mdd = n("cMdd");
+        const cl = n("cCl");
+        const sl = n("cSl");
+        const rr = n("cRR");
+        const lev = n("cLev");
+
+
+        const rptPct = cl
+            ? mdd / cl
+            : 0;
+
+
+        const rptUsd = cl
+            ? (balance * mdd / 100) / cl
+            : 0;
+
+
+        const position = sl
+            ? rptUsd * 100 / sl
+            : 0;
+
+
+        const stop = rptUsd;
+
+
+        const tp = stop * rr;
+
+
+        const margin = lev
+            ? position / lev
+            : 0;
+
+
+        setv("cRptPct", rptPct);
+        setv("cRptUsd", rptUsd);
+        setv("cPos", position);
+        setv("cSLUsd", stop);
+        setv("cTPUsd", tp);
+        setv("cMargin", margin);
+    }
+
+
+    /* =====================================================
+       FOREX CALCULATOR
+       ===================================================== */
+
+    function calcForex() {
+
+        const balance = n("fBalance");
+        const mdd = n("fMdd");
+        const cl = n("fCl");
+        const pipet = n("fPipet");
+        const rr = n("fRR");
+
+
+        const rptPct = cl
+            ? mdd / cl
+            : 0;
+
+
+        const rptUsd = cl
+            ? (balance * mdd / 100) / cl
+            : 0;
+
+
+        const position = pipet
+            ? rptUsd / pipet
+            : 0;
+
+
+        const stop = rptUsd;
+
+
+        const tp = stop * rr;
+
+
+        setv("fRptPct", rptPct);
+        setv("fRptUsd", rptUsd);
+        setv("fPos", position);
+        setv("fSLUsd", stop);
+        setv("fTPUsd", tp);
+    }
+
+
+    /* =====================================================
+       CLEAR BUTTON VISIBILITY
+       ===================================================== */
+
+    function updateClearButton() {
+
+        const inputs =
+            document.querySelectorAll("input");
+
+
+        let hasValue = false;
+
+
+        inputs.forEach(function(input) {
+
+            if (input.value.trim() !== "") {
+                hasValue = true;
+            }
+
+        });
+
+
+        /*
+         * Show the Clear button only in the
+         * currently selected tab when that tab
+         * contains at least one value.
+         */
+
+        const activeTab =
+            document.querySelector(".tab-content.active");
+
+
+        if (!activeTab) {
+            return;
+        }
+
+
+        const clearContainer =
+            activeTab.querySelector(".clear-container");
+
+
+        if (!clearContainer) {
+            return;
+        }
+
+
+        const activeInputs =
+            activeTab.querySelectorAll("input");
+
+
+        let activeHasValue = false;
+
+
+        activeInputs.forEach(function(input) {
+
+            if (input.value.trim() !== "") {
+                activeHasValue = true;
+            }
+
+        });
+
+
+        if (activeHasValue) {
+
+            clearContainer.style.display =
+                "block";
+
+        } else {
+
+            clearContainer.style.display =
+                "none";
+
+        }
+    }
+
+
+    /* =====================================================
+       CLEAR ALL
+       ===================================================== */
+
+    function clearAll() {
+
+        document
+            .querySelectorAll("input")
+            .forEach(function(input) {
+
+                input.value = "";
+
+            });
+
+
+        document
+            .querySelectorAll(".result span")
+            .forEach(function(result) {
+
+                result.textContent = "0";
+
+            });
+
+
+        updateClearButton();
+    }
+
+
+    /* =====================================================
+       INPUT EVENTS
+       ===================================================== */
+
+    document
+        .querySelectorAll("input")
+        .forEach(function(input) {
+
+            input.addEventListener(
+                "input",
+                function() {
+
+                    calcCrypto();
+                    calcForex();
+                    updateClearButton();
+
+                }
+            );
+
+        });
+
+
+    /* =====================================================
+       INITIALIZE
+       ===================================================== */
+
+    function runAllCalculations() {
+        let cbo11 = document.getElementById('cbo11').value;
+        let val1 = 0;
+        if (cbo11 === 'Fresh') val1 = 3;
+        else if (cbo11 === '1 Contact') val1 = 1.5;
+        
+        let cbo22 = document.getElementById('cbo22').value;
+        let val2 = 0;
+        if (cbo22 === '3 To 5') val2 = 1.5;
+        else if (cbo22 === '> 5') val2 = 3;
+
+        let cbo33 = document.getElementById('cbo33').value;
+        let val3 = 0;
+        if (cbo33 === 'Strong') val3 = 1;
+        else if (cbo33 === 'Strongest') val3 = 2;
+
+        let cbo44 = document.getElementById('cbo44').value;
+        let val4 = 0;
+        if (cbo44 === '4 To 6 Candle') val4 = 1;
+        else if (cbo44 === '<= 3 Candle') val4 = 2;
+
+        let cbo55 = document.getElementById('cbo55').value;
+        let val5 = 0;
+        if (cbo55 === 'Middle Curve') val5 = 1;
+        else if (cbo55 === 'Near to Zone') val5 = 2;
+
+        let cbo66 = document.getElementById('cbo66').value;
+        let zone = document.getElementById('cbozone').value;
+        let val6 = 0;
+        if (cbo66 === 'Up Trend' && zone === 'Demand') val6 = 1;
+        else if (cbo66 === 'Down Trend' && zone === 'Supply') val6 = 1;
+        else if (cbo66 === 'Range') val6 = 0.5;
+
+        let sumScore = val1 + val2 + val3 + val4 + val5 + val6;
+        let finalScore = (sumScore / 13) * 10;
+        document.getElementById('Text21').innerText = finalScore.toFixed(2);
+
+        let oeBox = document.getElementById('txt_OE');
+        if (sumScore === 0 && !cbo11 && !cbo22) {
+            oeBox.innerText = "Do not Trade!!!!";
+            oeBox.style.color = "#fff";
+            oeBox.style.backgroundColor = "#cc0000";
+        } else if (finalScore >= 9) {
+            oeBox.innerText = "BUY / SELL (Proximal Entry)";
+            oeBox.style.color = "#fff";
+            oeBox.style.backgroundColor = "#009900";
+        } else if (finalScore >= 7 && finalScore < 9) {
+            oeBox.innerText = "BUY / SELL (Confirmation Entry)";
+            oeBox.style.color = "#000";
+            oeBox.style.backgroundColor = "#ffcc00";
+        } else {
+            oeBox.innerText = "Do not Trade!!!!";
+            oeBox.style.color = "#fff";
+            oeBox.style.backgroundColor = "#cc0000";
+        }
+
+        let curve = document.getElementById('cbocurve').value;
+        let trend = document.getElementById('cbotrend').value;
+        let dmBox = document.getElementById('txtDM');
+
+        if (!zone || !curve || !trend) {
+            dmBox.innerText = "Please select Items";
+            dmBox.style.color = "#fff";
+            dmBox.style.backgroundColor = "#cc0000";
+        } else if (zone === "Supply" && curve === "Upper" && (trend === "DownTrend" || trend === "Range")) {
+            dmBox.innerText = "SELL";
+            dmBox.style.color = "#fff";
+            dmBox.style.backgroundColor = "#009900";
+        } else if (zone === "Supply" && curve === "Upper" && trend === "UpTrend") {
+            dmBox.innerText = "SELL (Caution)";
+            dmBox.style.color = "#000";
+            dmBox.style.backgroundColor = "#ffcc00";
+        } else if (zone === "Supply" && curve === "Middle" && (trend === "DownTrend" || trend === "Range")) {
+            dmBox.innerText = "SELL";
+            dmBox.style.color = "#fff";
+            dmBox.style.backgroundColor = "#009900";
+        } else if (zone === "Supply" && curve === "Lower" && trend === "DownTrend") {
+            dmBox.innerText = "SELL (Caution)";
+            dmBox.style.color = "#000";
+            dmBox.style.backgroundColor = "#ffcc00";
+        } else if (zone === "Demand" && curve === "Lower" && (trend === "UpTrend" || trend === "Range")) {
+            dmBox.innerText = "BUY";
+            dmBox.style.color = "#fff";
+            dmBox.style.backgroundColor = "#009900";
+        } else if (zone === "Demand" && curve === "Lower" && trend === "DownTrend") {
+            dmBox.innerText = "BUY (Caution)";
+            dmBox.style.color = "#000";
+            dmBox.style.backgroundColor = "#ffcc00";
+        } else if (zone === "Demand" && curve === "Middle" && (trend === "UpTrend" || trend === "Range")) {
+            dmBox.innerText = "BUY";
+            dmBox.style.color = "#fff";
+            dmBox.style.backgroundColor = "#009900";
+        } else if (zone === "Demand" && curve === "Upper" && trend === "UpTrend") {
+            dmBox.innerText = "BUY (Caution)";
+            dmBox.style.color = "#000";
+            dmBox.style.backgroundColor = "#ffcc00";
+        } else {
+            dmBox.innerText = "Do not Trade";
+            dmBox.style.color = "#fff";
+            dmBox.style.backgroundColor = "#cc0000";
+        }
+    }
+
+    calcCrypto();
+    calcForex();
+    updateClearButton();
+    runAllCalculations();
+
+</script>
+
+</body>
+</html>
